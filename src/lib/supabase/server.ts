@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { NextRequest } from 'next/server'
 
 export async function createClient() {
   const cookieStore = await cookies()
@@ -36,5 +37,22 @@ export function createKnowledgeBaseClient() {
     process.env.KNOWLEDGE_BASE_SUPABASE_URL!,
     process.env.KNOWLEDGE_BASE_SUPABASE_ANON_KEY!,
     { cookies: { getAll: () => [], setAll: () => {} } }
+  )
+}
+
+export function createAuthClient(request: NextRequest) {
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll() {
+          // Session refresh is handled by middleware; API routes are read-only
+        },
+      },
+    }
   )
 }

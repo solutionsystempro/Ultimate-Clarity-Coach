@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { Inter, Playfair_Display } from 'next/font/google'
-import { ClerkProvider } from '@clerk/nextjs'
 import { Toaster } from 'react-hot-toast'
 import './globals.css'
 
@@ -19,23 +18,21 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ClerkProvider>
-      <html lang="en" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
-        <body className="font-sans antialiased bg-[#08080B] text-[#EFEFEF]">
-          {children}
-          <Toaster
-            position="bottom-right"
-            toastOptions={{
-              style: { 
-                background: '#0F0F14', 
-                color: '#EFEFEF', 
-                border: '1px solid #1F1F28',
-                fontSize: '13px'
-              },
-            }}
-          />
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
+      <body className="font-sans antialiased bg-[#08080B] text-[#EFEFEF]">
+        {children}
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            style: {
+              background: '#0F0F14',
+              color: '#EFEFEF',
+              border: '1px solid #1F1F28',
+              fontSize: '13px'
+            },
+          }}
+        />
+      </body>
+    </html>
   )
 }

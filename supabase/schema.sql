@@ -40,7 +40,7 @@ create index if not exists documents_content_idx
 -- ============================================
 
 create table if not exists users (
-  id text primary key, -- Clerk user ID
+  id text primary key, -- Supabase Auth user ID
   email text unique not null,
   full_name text,
   plan text default 'free' check (plan in ('free', 'premium')),

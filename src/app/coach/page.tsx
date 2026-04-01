@@ -1,17 +1,17 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { useUser } from '@clerk/nextjs'
 import { motion, AnimatePresence } from 'framer-motion'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import toast from 'react-hot-toast'
 import {
-  Send, Plus, MessageSquare, Trash2, User, LogOut,
+  Send, Plus, MessageSquare, Trash2, User as UserIcon, LogOut,
   ChevronLeft, ChevronRight, Sparkles, Settings, Users, Download, FileText, BarChart2,
 } from 'lucide-react'
 import Link from 'next/link'
-import { useClerk } from '@clerk/nextjs'
+import { createClient } from '@/lib/supabase/client'
+import type { User } from '@supabase/supabase-js'
 
 // ─── One-Sheeter Renderer ───────────────────────────────────
 function OneSheeterCard({ content }: { content: string }) {
@@ -163,8 +163,17 @@ const MENTORS = [
 ]
 
 export default function CoachPage() {
-  const { user } = useUser()
-  const { signOut } = useClerk()
+  const [user, setUser] = useState<User | null>(null)
+  const supabase = createClient()
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => setUser(user))
+  }, [])
+
+  async function handleSignOut() {
+    await supabase.auth.signOut()
+    window.location.href = '/sign-in'
+  }
 
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null)
@@ -411,10 +420,10 @@ export default function CoachPage() {
               </Link>
               <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[#7A7A8C] hover:bg-white/5 hover:text-[#EFEFEF] transition-colors">
                 <div className="w-5 h-5 rounded-full bg-[rgba(0,200,83,0.20)] flex items-center justify-center">
-                  <User className="w-3 h-3 text-accent" />
+                  <UserIcon className="w-3 h-3 text-accent" />
                 </div>
-                <span className="text-xs truncate flex-1">{user?.firstName || user?.emailAddresses[0]?.emailAddress}</span>
-                <button onClick={() => signOut()} title="Sign out">
+                <span className="text-xs truncate flex-1">{user?.user_metadata?.full_name || user?.email}</span>
+                <button onClick={handleSignOut} title="Sign out">
                   <LogOut className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -532,7 +541,7 @@ export default function CoachPage() {
                     </div>
                     {msg.role === 'user' && (
                       <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <User className="w-4 h-4 text-neutral-300" />
+                        <UserIcon className="w-4 h-4 text-neutral-300" />
                       </div>
                     )}
                   </div>

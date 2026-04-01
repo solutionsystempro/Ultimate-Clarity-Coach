@@ -1,17 +1,22 @@
 /**
  * Ultimate Business Clarity Coach — Data Ingestion Pipeline
  *
- * Processes all files from the Hormozi-Raw folder:
+ * Processes files from the knowledge-base directory (or any specified dir):
  *  - PDFs → extract text (via pdf-parse)
  *  - DOCX → extract text (via mammoth)
  *  - MP3/MP4/MOV/WAV → transcribe via OpenAI Whisper
  *  - TXT/MD → read directly
  *
+ * Auto-tags each chunk with coach and topic based on directory structure:
+ *  - knowledge-base/coaches/hormozi/offers/file.pdf → coach: "hormozi", topic: "offers"
+ *  - knowledge-base/topics/sales-mastery/file.md → coach: "cross-coach", topic: "sales-mastery"
+ *  - knowledge-base/frameworks/file.md → coach: "framework", topic: "framework"
+ *
  * Then chunks, embeds, and upserts into Supabase pgvector.
  *
  * Usage:
  *   node scripts/ingest.mjs
- *   node scripts/ingest.mjs --dir "C:\Users\ensan\Dev\Hormozi-Raw"
+ *   node scripts/ingest.mjs --dir "./knowledge-base"
  *   node scripts/ingest.mjs --type pdf          (only process PDFs)
  *   node scripts/ingest.mjs --resume            (skip already-processed files)
  */
@@ -39,7 +44,7 @@ const getArg = (flag) => {
 }
 const hasFlag = (flag) => args.includes(flag)
 
-const RAW_DIR = getArg('--dir') || 'C:\\Users\\ensan\\Dev\\Hormozi-Raw'
+const RAW_DIR = getArg('--dir') || './knowledge-base'
 const FILTER_TYPE = getArg('--type') || null
 const RESUME = hasFlag('--resume')
 
@@ -109,6 +114,48 @@ function walkDir(dir) {
 function markProcessed(filePath) {
   processedFiles.add(filePath)
   writeFileSync(PROCESSED_FILE, JSON.stringify([...processedFiles], null, 2))
+}
+
+// ── Auto-tagging from directory structure ─────────────────────────────────
+
+const KNOWN_COACHES = [
+  'hormozi', 'robbins', 'wilde', 'cardone', 'brunson',
+  'kennedy', 'voss', 'godin', 'sinek', 'dunford', 'abraham', 'burchard'
+]
+
+function extractTags(filePath) {
+  const normalized = filePath.replace(/\\/g, '/').toLowerCase()
+  let coach = 'general'
+  let topic = 'general'
+
+  // Check for knowledge-base directory structure
+  const kbMatch = normalized.match(/knowledge-base\/(\w+)\/([^/]+)(?:\/([^/]+))?/)
+  if (kbMatch) {
+    const section = kbMatch[1]   // coaches, topics, or frameworks
+    const sub1 = kbMatch[2]      // coach name or topic name
+    const sub2 = kbMatch[3]      // topic under coach (optional)
+
+    if (section === 'coaches' && KNOWN_COACHES.includes(sub1)) {
+      coach = sub1
+      topic = sub2 || 'general'
+    } else if (section === 'topics') {
+      coach = 'cross-coach'
+      topic = sub1
+    } else if (section === 'frameworks') {
+      coach = 'framework'
+      topic = 'framework'
+    }
+  } else {
+    // Fallback: try to detect coach from filename or path
+    for (const c of KNOWN_COACHES) {
+      if (normalized.includes(c)) {
+        coach = c
+        break
+      }
+    }
+  }
+
+  return { coach, topic }
 }
 
 // ── Text extraction ────────────────────────────────────────────────────────
@@ -272,11 +319,14 @@ async function processFile(filePath) {
     return 0
   }
 
+  // Extract coach/topic tags from directory structure
+  const tags = extractTags(filePath)
+
   // Chunk the text
   const rawChunks = chunkText(text)
   if (rawChunks.length === 0) return 0
 
-  log(`  → ${rawChunks.length} chunks. Embedding...`)
+  log(`  → ${rawChunks.length} chunks. Coach: ${tags.coach}, Topic: ${tags.topic}. Embedding...`)
 
   let totalInserted = 0
 
@@ -303,10 +353,14 @@ async function processFile(filePath) {
       embedding: embeddings[j],
       source_file: baseName,
       source_type: sourceType,
+      coach: tags.coach,
+      topic: tags.topic,
       chunk_index: i + j,
       metadata: {
         file_path: filePath,
         total_chunks: rawChunks.length,
+        coach: tags.coach,
+        topic: tags.topic,
         processed_at: new Date().toISOString(),
       },
     }))

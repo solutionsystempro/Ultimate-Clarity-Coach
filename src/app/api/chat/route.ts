@@ -64,9 +64,10 @@ export async function POST(req: NextRequest) {
       .eq('user_id', userId)
       .single()
 
-    // RAG: retrieve relevant knowledge base chunks
-    const context = await retrieveContext(lastUserMessage)
-    const systemPrompt = buildSystemPrompt(context, mentor || 'standard', profile || undefined)
+    // RAG: retrieve relevant knowledge base chunks (filtered by active mentor)
+    const activeMentor = mentor || 'standard'
+    const context = await retrieveContext(lastUserMessage, 8, 0.65, activeMentor)
+    const systemPrompt = buildSystemPrompt(context, activeMentor, profile || undefined)
 
     // Stream response from Claude
     const stream = await anthropic.messages.stream({
@@ -82,7 +83,7 @@ export async function POST(req: NextRequest) {
         conversation_id: conversationId,
         role: 'user',
         content: lastUserMessage,
-        sources: context.map(c => ({ id: c.id, source_file: c.source_file, similarity: c.similarity })),
+        sources: context.map(c => ({ id: c.id, source_file: c.source_file, coach: c.coach, topic: c.topic, similarity: c.similarity })),
       })
     }
 

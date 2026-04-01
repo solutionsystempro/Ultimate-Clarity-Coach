@@ -9,6 +9,8 @@ export interface DocumentChunk {
   metadata: Record<string, unknown>
   source_file: string
   source_type: string
+  coach: string
+  topic: string
   similarity: number
 }
 
@@ -20,14 +22,42 @@ export async function getEmbedding(text: string): Promise<number[]> {
   return response.data[0].embedding
 }
 
+// Mentor-to-coach mapping for filtered retrieval
+const MENTOR_COACH_MAP: Record<MentorType, string[]> = {
+  standard: [], // empty = search all coaches
+  hormozi: ['hormozi', 'framework', 'cross-coach'],
+  robbins: ['robbins', 'framework', 'cross-coach'],
+  wilde: ['wilde', 'framework', 'cross-coach'],
+}
+
 export async function retrieveContext(
   query: string,
   matchCount = 8,
-  threshold = 0.65
+  threshold = 0.65,
+  mentor: MentorType = 'standard'
 ): Promise<DocumentChunk[]> {
   const embedding = await getEmbedding(query)
   const supabase = createKnowledgeBaseClient()
+  const filterCoaches = MENTOR_COACH_MAP[mentor] || []
 
+  // Use coach-filtered search when a specific mentor is active
+  if (filterCoaches.length > 0) {
+    const { data, error } = await supabase.rpc('match_documents_by_coach', {
+      query_embedding: embedding,
+      filter_coaches: filterCoaches,
+      match_threshold: threshold,
+      match_count: matchCount,
+    })
+
+    if (error) {
+      console.error('RAG retrieval error (coach-filtered):', error)
+      // Fall back to unfiltered search
+    } else if (data && data.length > 0) {
+      return data as DocumentChunk[]
+    }
+  }
+
+  // Default: search across all coaches
   const { data, error } = await supabase.rpc('match_documents', {
     query_embedding: embedding,
     match_threshold: threshold,
@@ -348,7 +378,11 @@ export function buildSystemPrompt(
   businessProfile?: Record<string, unknown>
 ): string {
   const contextText = context.length > 0
-    ? context.map((doc, i) => `[Knowledge Base — Source ${i + 1} from ${doc.source_file}]\n${doc.content}`).join('\n\n---\n\n')
+    ? context.map((doc, i) => {
+        const coachLabel = doc.coach && doc.coach !== 'general' ? ` | Coach: ${doc.coach}` : ''
+        const topicLabel = doc.topic && doc.topic !== 'general' ? ` | Topic: ${doc.topic}` : ''
+        return `[Knowledge Base — Source ${i + 1} from ${doc.source_file}${coachLabel}${topicLabel}]\n${doc.content}`
+      }).join('\n\n---\n\n')
     : ''
 
   const profileSection = businessProfile

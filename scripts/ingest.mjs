@@ -27,13 +27,20 @@ import { createReadStream, writeFileSync, existsSync, mkdirSync } from 'fs'
 import { readFile } from 'fs/promises'
 
 // ── Config ──────────────────────────────────────────────────────────────────
+// Ingestion writes to the KNOWLEDGE BASE Supabase project (separate from the
+// main app DB that stores users/conversations). The RAG engine reads from the
+// same KB project via KNOWLEDGE_BASE_SUPABASE_URL.
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
+const SUPABASE_URL = process.env.KNOWLEDGE_BASE_SUPABASE_URL
+const SUPABASE_SERVICE_KEY = process.env.KNOWLEDGE_BASE_SUPABASE_SERVICE_ROLE_KEY
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY || !OPENAI_API_KEY) {
-  console.error('❌ Missing env vars. Make sure .env.local is set up.')
+  console.error('❌ Missing env vars. Required:')
+  console.error('   KNOWLEDGE_BASE_SUPABASE_URL')
+  console.error('   KNOWLEDGE_BASE_SUPABASE_SERVICE_ROLE_KEY')
+  console.error('   OPENAI_API_KEY')
+  console.error('Make sure .env.local is set up.')
   process.exit(1)
 }
 

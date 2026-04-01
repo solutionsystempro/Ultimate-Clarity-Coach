@@ -1,27 +1,26 @@
-import { NextResponse } from 'next/server'
-import { auth, currentUser } from '@clerk/nextjs/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { createAuthClient, createServiceClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe'
-import { createServiceClient } from '@/lib/supabase/server'
 
-export async function POST() {
-  const { userId } = await auth()
-  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export async function POST(req: NextRequest) {
+  const supabaseAuth = createAuthClient(req)
+  const { data: { user } } = await supabaseAuth.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const clerkUser = await currentUser()
-  const email = clerkUser?.emailAddresses[0]?.emailAddress || ''
-
+  const email = user.email || ''
   const supabase = createServiceClient()
-  const { data: user } = await supabase
+
+  const { data: dbUser } = await supabase
     .from('users')
     .select('stripe_customer_id')
-    .eq('id', userId)
+    .eq('id', user.id)
     .single()
 
-  let customerId = user?.stripe_customer_id
+  let customerId = dbUser?.stripe_customer_id
   if (!customerId) {
-    const customer = await stripe.customers.create({ email, metadata: { clerk_user_id: userId } })
+    const customer = await stripe.customers.create({ email, metadata: { supabase_user_id: user.id } })
     customerId = customer.id
-    await supabase.from('users').update({ stripe_customer_id: customerId }).eq('id', userId)
+    await supabase.from('users').update({ stripe_customer_id: customerId }).eq('id', user.id)
   }
 
   const session = await stripe.checkout.sessions.create({
@@ -30,7 +29,7 @@ export async function POST() {
     line_items: [{ price: process.env.STRIPE_PREMIUM_PRICE_ID!, quantity: 1 }],
     success_url: `${process.env.NEXT_PUBLIC_APP_URL}/coach?upgraded=true`,
     cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/coach`,
-    subscription_data: { metadata: { clerk_user_id: userId } },
+    subscription_data: { metadata: { supabase_user_id: user.id } },
   })
 
   return NextResponse.json({ url: session.url })

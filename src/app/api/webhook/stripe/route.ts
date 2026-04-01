@@ -16,28 +16,28 @@ export async function POST(req: NextRequest) {
   const supabase = createServiceClient()
 
   if (event.type === 'customer.subscription.created' || event.type === 'customer.subscription.updated') {
-    const subscription = event.data.object as { status: string; metadata: { clerk_user_id?: string }; customer: string; id: string }
-    const clerkUserId = subscription.metadata?.clerk_user_id
+    const subscription = event.data.object as { status: string; metadata: { supabase_user_id?: string }; customer: string; id: string }
+    const userId = subscription.metadata?.supabase_user_id
 
-    if (clerkUserId) {
+    if (userId) {
       await supabase.from('users').update({
         plan: subscription.status === 'active' ? 'premium' : 'free',
         stripe_subscription_id: subscription.id,
         subscription_status: subscription.status,
-      }).eq('id', clerkUserId)
+      }).eq('id', userId)
     }
   }
 
   if (event.type === 'customer.subscription.deleted') {
-    const subscription = event.data.object as { metadata: { clerk_user_id?: string }; id: string }
-    const clerkUserId = subscription.metadata?.clerk_user_id
+    const subscription = event.data.object as { metadata: { supabase_user_id?: string }; id: string }
+    const userId = subscription.metadata?.supabase_user_id
 
-    if (clerkUserId) {
+    if (userId) {
       await supabase.from('users').update({
         plan: 'free',
         subscription_status: 'canceled',
         stripe_subscription_id: null,
-      }).eq('id', clerkUserId)
+      }).eq('id', userId)
     }
   }
 

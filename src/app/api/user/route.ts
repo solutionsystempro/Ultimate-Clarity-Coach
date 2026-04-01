@@ -1,22 +1,20 @@
-import { NextResponse } from 'next/server'
-import { auth, currentUser } from '@clerk/nextjs/server'
-import { createServiceClient } from '@/lib/supabase/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { createAuthClient, createServiceClient } from '@/lib/supabase/server'
 
-export async function GET() {
-  const { userId } = await auth()
-  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export async function GET(req: NextRequest) {
+  const supabaseAuth = createAuthClient(req)
+  const { data: { user } } = await supabaseAuth.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const clerkUser = await currentUser()
   const supabase = createServiceClient()
 
-  // Upsert user into our DB
   const { data } = await supabase
     .from('users')
     .upsert(
       {
-        id: userId,
-        email: clerkUser?.emailAddresses[0]?.emailAddress || '',
-        full_name: `${clerkUser?.firstName || ''} ${clerkUser?.lastName || ''}`.trim(),
+        id: user.id,
+        email: user.email || '',
+        full_name: user.user_metadata?.full_name || '',
       },
       { onConflict: 'id' }
     )

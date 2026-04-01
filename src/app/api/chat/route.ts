@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
-import { auth } from '@clerk/nextjs/server'
+import { createAuthClient, createServiceClient } from '@/lib/supabase/server'
 import { retrieveContext, buildSystemPrompt } from '@/lib/rag'
-import { createServiceClient } from '@/lib/supabase/server'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -10,44 +9,46 @@ const FREE_DAILY_LIMIT = 5
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = await auth()
-    if (!userId) {
+    const supabaseAuth = createAuthClient(req)
+    const { data: { user } } = await supabaseAuth.auth.getUser()
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+    const userId = user.id
 
     const { messages, conversationId, mentor } = await req.json()
     const supabase = createServiceClient()
 
     // Get or create user record
-    let { data: user } = await supabase
+    let { data: dbUser } = await supabase
       .from('users')
       .select('*')
       .eq('id', userId)
       .single()
 
-    if (!user) {
+    if (!dbUser) {
       const { data: newUser } = await supabase
         .from('users')
-        .insert({ id: userId, email: '' })
+        .insert({ id: userId, email: user.email || '' })
         .select()
         .single()
-      user = newUser
+      dbUser = newUser
     }
 
     // Check daily message limit for free users
-    if (user?.plan === 'free') {
+    if (dbUser?.plan === 'free') {
       const today = new Date().toDateString()
-      const resetDate = new Date(user.messages_reset_at).toDateString()
+      const resetDate = new Date(dbUser.messages_reset_at).toDateString()
 
       if (today !== resetDate) {
         await supabase
           .from('users')
           .update({ messages_used_today: 0, messages_reset_at: new Date().toISOString() })
           .eq('id', userId)
-        user.messages_used_today = 0
+        dbUser.messages_used_today = 0
       }
 
-      if (user.messages_used_today >= FREE_DAILY_LIMIT) {
+      if (dbUser.messages_used_today >= FREE_DAILY_LIMIT) {
         return NextResponse.json(
           { error: 'Daily limit reached. Upgrade to Premium for unlimited coaching.' },
           { status: 429 }
@@ -73,7 +74,7 @@ export async function POST(req: NextRequest) {
       model: 'claude-sonnet-4-6',
       max_tokens: 2048,
       system: systemPrompt,
-      messages: messages.slice(-20), // keep last 20 messages for context
+      messages: messages.slice(-20),
     })
 
     // Save user message to DB
@@ -87,10 +88,10 @@ export async function POST(req: NextRequest) {
     }
 
     // Increment usage counter for free users
-    if (user?.plan === 'free') {
+    if (dbUser?.plan === 'free') {
       await supabase
         .from('users')
-        .update({ messages_used_today: (user.messages_used_today || 0) + 1 })
+        .update({ messages_used_today: (dbUser.messages_used_today || 0) + 1 })
         .eq('id', userId)
     }
 

@@ -308,6 +308,11 @@ export default function CoachPage() {
         return
       }
 
+      if (res.status === 401) {
+        window.location.href = '/sign-in'
+        return
+      }
+
       if (!res.ok) {
         toast.error('Something went wrong. Please try again.')
         setMessages(prev => prev.slice(0, -1))

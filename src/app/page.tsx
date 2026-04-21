@@ -262,6 +262,32 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── AI FOUNDATION WORKSHOP (one-time, external) ── */}
+      <section style={{ padding: '0 24px 72px' }}>
+        <div style={{ maxWidth: 760, margin: '0 auto' }}>
+          <div className="reveal" style={{ padding: '36px 40px', borderRadius: 16, background: 'linear-gradient(140deg, rgba(170,255,0,0.05) 0%, rgba(255,255,255,0.01) 100%)', border: '1px solid rgba(170,255,0,0.22)', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: 0, right: 0, background: 'var(--accent)', color: '#000', fontSize: 10, fontWeight: 800, letterSpacing: '.08em', padding: '5px 14px', borderRadius: '0 16px 0 8px' }}>ONE-TIME · DONE WITH YOU</div>
+            <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent)', letterSpacing: '.08em', textTransform: 'uppercase', margin: '0 0 12px' }}>Build Your Offer Live</h3>
+            <div style={{ fontSize: 'clamp(26px, 3.2vw, 34px)', fontWeight: 900, letterSpacing: '-.025em', margin: '0 0 10px' }}>AI Foundation Workshop with Ian</div>
+            <p style={{ color: 'var(--muted)', fontSize: 15, lineHeight: 1.7, margin: '0 0 22px', maxWidth: 560 }}>90 minutes. 1:1. You walk away with a complete offer doc, buyer persona, named mechanism, power offer statement, and brand voice profile — the inputs your AI coach needs to actually sound like you.</p>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 14, marginBottom: 22, flexWrap: 'wrap' }}>
+              <span style={{ fontSize: 38, fontWeight: 900, letterSpacing: '-.03em' }}>$97</span>
+              <span style={{ fontSize: 17, color: 'var(--muted)', textDecoration: 'line-through' }}>$297</span>
+              <span style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 600 }}>Only 10 spots at this price</span>
+            </div>
+            <a
+              href="https://ianryankirk.com/ai-foundation?utm_source=clarity-coach&utm_medium=in-app&utm_content=landing-card"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-glow"
+              style={{ display: 'inline-block', padding: '14px 28px', borderRadius: 10, background: 'var(--accent)', color: '#000', fontWeight: 800, fontSize: 15, textDecoration: 'none', letterSpacing: '-.01em' }}
+            >
+              Get AI Foundation — $97 →
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* ── TESTIMONIALS ── */}
       <section style={{ padding: '72px 24px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
         <div style={{ maxWidth: 920, margin: '0 auto' }}>

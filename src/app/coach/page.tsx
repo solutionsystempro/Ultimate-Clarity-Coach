@@ -415,6 +415,16 @@ export default function CoachPage() {
 
             {/* Sidebar footer */}
             <div className="p-3 border-t border-[#1F1F28] space-y-1">
+              <a
+                href="https://ianryankirk.com/ai-foundation?utm_source=clarity-coach&utm_medium=in-app&utm_content=sidebar-nudge"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col gap-0.5 px-3 py-2.5 mb-1 rounded-xl border border-[rgba(170,255,0,0.22)] bg-[rgba(170,255,0,0.04)] hover:bg-[rgba(170,255,0,0.08)] transition-colors"
+              >
+                <span className="text-[10px] font-bold text-accent uppercase tracking-widest">Build Your Offer Live</span>
+                <span className="text-xs text-neutral-300 leading-snug">No offer doc yet? Ian builds yours in 90 min.</span>
+                <span className="text-[10px] font-semibold text-accent mt-0.5">AI Foundation — $97 →</span>
+              </a>
               <Link href="/profile" className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-neutral-400 hover:bg-white/5 hover:text-white transition-colors text-xs">
                 <Settings className="w-3.5 h-3.5" />
                 Business Profile

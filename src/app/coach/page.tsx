@@ -42,9 +42,9 @@ function OneSheeterCard({ content }: { content: string }) {
 <title>Offer One-Sheeter</title>
 <style>
   body { font-family: Georgia, serif; max-width: 700px; margin: 60px auto; padding: 0 30px; color: #1a1a1a; line-height: 1.6; }
-  h1 { font-size: 2em; border-bottom: 3px solid #00c853; padding-bottom: 12px; margin-bottom: 24px; }
-  h2 { font-size: 1.3em; color: #00c853; margin-top: 32px; margin-bottom: 8px; }
-  blockquote { border-left: 4px solid #00c853; padding: 12px 20px; background: #f0fff4; font-size: 1.1em; font-weight: bold; margin: 20px 0; }
+  h1 { font-size: 2em; border-bottom: 3px solid #aaff00; padding-bottom: 12px; margin-bottom: 24px; }
+  h2 { font-size: 1.3em; color: #aaff00; margin-top: 32px; margin-bottom: 8px; }
+  blockquote { border-left: 4px solid #aaff00; padding: 12px 20px; background: #f5ffe0; font-size: 1.1em; font-weight: bold; margin: 20px 0; }
   li { margin: 4px 0; }
   p strong { font-weight: 700; }
   @media print { body { margin: 20px; } }
@@ -60,8 +60,8 @@ function OneSheeterCard({ content }: { content: string }) {
   }
 
   return (
-    <div className="mt-3 rounded-2xl border border-[rgba(0,200,83,0.30)] bg-[rgba(0,200,83,0.04)] overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[rgba(0,200,83,0.15)]">
+    <div className="mt-3 rounded-2xl border border-[rgba(170,255,0,0.30)] bg-[rgba(170,255,0,0.04)] overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[rgba(170,255,0,0.15)]">
         <div className="flex items-center gap-2">
           <FileText className="w-4 h-4 text-accent" />
           <span className="text-sm font-semibold text-accent">Offer One-Sheeter Ready</span>
@@ -115,7 +115,7 @@ function MessageContent({ content, isStreaming }: { content: string; isStreaming
     return (
       <div>
         {before && <div className="chat-prose text-sm mb-2"><ReactMarkdown remarkPlugins={[remarkGfm]}>{before}</ReactMarkdown></div>}
-        <div className="mt-2 rounded-xl border border-[rgba(0,200,83,0.20)] bg-[rgba(0,200,83,0.03)] p-4">
+        <div className="mt-2 rounded-xl border border-[rgba(170,255,0,0.20)] bg-[rgba(170,255,0,0.03)] p-4">
           <div className="flex items-center gap-2 mb-3">
             <FileText className="w-4 h-4 text-accent" />
             <span className="text-xs text-accent font-medium">Building your One-Sheeter...</span>
@@ -352,7 +352,7 @@ export default function CoachPage() {
   const showStarters = messages.length === 0 && !isLoadingMessages
 
   return (
-    <div className="flex h-screen bg-neutral-950 text-white overflow-hidden">
+    <div className="flex h-screen bg-[#08080B] text-white overflow-hidden">
       {/* Sidebar */}
       <AnimatePresence initial={false}>
         {sidebarOpen && (
@@ -361,10 +361,10 @@ export default function CoachPage() {
             animate={{ width: 260, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="flex-shrink-0 flex flex-col border-r border-white/8 bg-neutral-900 overflow-hidden"
+            className="flex-shrink-0 flex flex-col border-r border-[#1F1F28] bg-[#0F0F14] overflow-hidden"
           >
             {/* Sidebar header */}
-            <div className="p-4 flex items-center justify-between border-b border-white/8">
+            <div className="p-4 flex items-center justify-between border-b border-[#1F1F28]">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
                   <span className="text-black font-bold text-xs">B</span>
@@ -393,10 +393,10 @@ export default function CoachPage() {
                 conversations.map(conv => (
                   <div
                     key={conv.id}
-                    className={`group flex items-center gap-2 px-3 py-2.5 rounded-xl cursor-pointer transition-colors ${
+                    className={`group flex items-center gap-2 px-3 py-2.5 rounded-xl cursor-pointer transition-colors border-l-2 ${
                       activeConversationId === conv.id
-                        ? 'bg-white/10 text-white'
-                        : 'text-neutral-400 hover:bg-white/5 hover:text-white'
+                        ? 'bg-[rgba(170,255,0,0.06)] text-white border-[#AAFF00]'
+                        : 'text-[#7A7A8C] hover:bg-white/5 hover:text-white border-transparent'
                     }`}
                     onClick={() => setActiveConversationId(conv.id)}
                   >
@@ -414,7 +414,7 @@ export default function CoachPage() {
             </div>
 
             {/* Sidebar footer */}
-            <div className="p-3 border-t border-white/8 space-y-1">
+            <div className="p-3 border-t border-[#1F1F28] space-y-1">
               <Link href="/profile" className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-neutral-400 hover:bg-white/5 hover:text-white transition-colors text-xs">
                 <Settings className="w-3.5 h-3.5" />
                 Business Profile
@@ -424,7 +424,7 @@ export default function CoachPage() {
                 Admin Dashboard
               </Link>
               <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[#7A7A8C] hover:bg-white/5 hover:text-[#EFEFEF] transition-colors">
-                <div className="w-5 h-5 rounded-full bg-[rgba(0,200,83,0.20)] flex items-center justify-center">
+                <div className="w-5 h-5 rounded-full bg-[rgba(170,255,0,0.20)] flex items-center justify-center">
                   <UserIcon className="w-3 h-3 text-accent" />
                 </div>
                 <span className="text-xs truncate flex-1">{user?.user_metadata?.full_name || user?.email}</span>
@@ -440,7 +440,7 @@ export default function CoachPage() {
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top bar */}
-        <div className="h-12 flex items-center px-4 border-b border-white/8 gap-3 flex-shrink-0">
+        <div className="h-12 flex items-center px-4 border-b border-[#1F1F28] gap-3 flex-shrink-0">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="p-1.5 rounded-lg hover:bg-white/8 text-neutral-400 hover:text-white transition-colors"
@@ -484,7 +484,7 @@ export default function CoachPage() {
         <div className="flex-1 overflow-y-auto">
           {showStarters ? (
             <div className="h-full flex flex-col items-center justify-center px-6 py-12">
-              <div className="w-14 h-14 rounded-2xl bg-accent flex items-center justify-center mb-6 shadow-[0_0_48px_rgba(0,200,83,0.15)]">
+              <div className="w-14 h-14 rounded-2xl bg-accent flex items-center justify-center mb-6 shadow-[0_0_48px_rgba(170,255,0,0.15)]">
                 <Sparkles className="w-7 h-7 text-black" />
               </div>
               <h2 className="text-2xl font-bold mb-3 text-center">Your Ultimate Business Clarity Coach</h2>
@@ -499,7 +499,7 @@ export default function CoachPage() {
                   <button
                     key={prompt}
                     onClick={() => sendMessage(prompt)}
-                    className="text-left p-4 rounded-xl border border-[#1F1F28] bg-[#0F0F14] hover:bg-[#16161E] hover:border-[rgba(0,200,83,0.30)] transition-all text-sm text-[#7A7A8C] hover:text-[#EFEFEF]"
+                    className="text-left p-4 rounded-xl border border-[#1F1F28] bg-[#0F0F14] hover:bg-[#16161E] hover:border-[rgba(170,255,0,0.30)] transition-all text-sm text-[#7A7A8C] hover:text-[#EFEFEF]"
                   >
                     {prompt}
                   </button>
@@ -512,7 +512,7 @@ export default function CoachPage() {
                 <div className="flex items-center justify-center py-12">
                   <div className="flex gap-1.5">
                     {[0, 1, 2].map(i => (
-                      <div key={i} className="w-2 h-2 rounded-full bg-yellow-500 typing-dot" style={{ animationDelay: `${i * 0.2}s` }} />
+                      <div key={i} className="w-2 h-2 rounded-full bg-accent typing-dot" style={{ animationDelay: `${i * 0.2}s` }} />
                     ))}
                   </div>
                 </div>
@@ -560,7 +560,7 @@ export default function CoachPage() {
         {/* Input area */}
         <div className="px-4 pb-4 pt-2 flex-shrink-0">
           <div className="max-w-3xl mx-auto">
-            <div className="flex items-end gap-3 bg-neutral-900 border border-white/10 rounded-2xl px-4 py-3 focus-within:border-yellow-500/40 transition-colors">
+            <div className="flex items-end gap-3 bg-[#0F0F14] border border-[#1F1F28] rounded-2xl px-4 py-3 focus-within:border-[rgba(170,255,0,0.40)] transition-colors">
               <textarea
                 ref={textareaRef}
                 value={input}

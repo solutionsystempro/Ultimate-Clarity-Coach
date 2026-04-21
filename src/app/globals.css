@@ -1,17 +1,31 @@
 @import "tailwindcss";
 
+/* Tailwind v4 theme registration — makes bg-accent, text-accent, etc. work as utilities */
+@theme {
+  --color-accent: #AAFF00;
+  --color-background: #08080B;
+  --color-surface: #0F0F14;
+  --color-surface-2: #16161E;
+  --color-border-custom: #1F1F28;
+  --color-muted: #7A7A8C;
+  --color-off-white: #EFEFEF;
+  --color-danger: #FF3B30;
+  --color-success: #00D26A;
+  --color-warning: #FF8C00;
+}
+
 :root {
   --font-inter: 'Inter', sans-serif;
   --font-playfair: 'Playfair Display', serif;
 
-  /* Brand system */
+  /* Brand system — IRK palette */
   --bg: #08080B;
   --surface: #0F0F14;
   --surface-2: #16161E;
   --border: #1F1F28;
-  --accent: #00C853;
-  --accent-dim: rgba(0, 200, 83, 0.10);
-  --accent-glow: 0 0 48px rgba(0, 200, 83, 0.28);
+  --accent: #AAFF00;
+  --accent-dim: rgba(170, 255, 0, 0.10);
+  --accent-glow: 0 0 48px rgba(170, 255, 0, 0.28);
   --text: #EFEFEF;
   --muted: #7A7A8C;
   --danger: #FF3B30;
@@ -27,13 +41,152 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-inter);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Grain texture overlay — matches IRK */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.035;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* Selection */
+::selection {
+  background: #AAFF00;
+  color: #08080B;
 }
 
 /* Custom scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: #08080B; }
+::-webkit-scrollbar-thumb { background: #AAFF00; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #c8ff40; }
+
+/* ── Glass Cards ── */
+.glass-card {
+  background: rgba(255, 255, 255, 0.015);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.glass-card-hover {
+  background: rgba(255, 255, 255, 0.015);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.glass-card-hover:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(170, 255, 0, 0.3);
+  transform: translateY(-4px);
+  box-shadow: inset 0 1px 0 rgba(170, 255, 0, 0.15), 0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 40px rgba(170, 255, 0, 0.05);
+}
+
+/* Card accent top stripe */
+.card-accent {
+  border-top: 2px solid #AAFF00;
+}
+
+/* ── Typography ── */
+.label-tag {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--muted);
+}
+
+/* Pill badge */
+.pill-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid #1F1F28;
+  border-radius: 999px;
+  padding: 4px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #7A7A8C;
+}
+
+.pill-tag-lime {
+  background: rgba(170, 255, 0, 0.06);
+  border-color: rgba(170, 255, 0, 0.25);
+  color: #AAFF00;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #AAFF00 0%, #00E5B3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #AAFF00;
+  color: #08080B;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  padding: 14px 32px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #c8ff40;
+  transform: translateY(-2px);
+  box-shadow: 0 0 24px rgba(170, 255, 0, 0.5), 0 0 64px rgba(170, 255, 0, 0.2);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  padding: 14px 32px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  border-color: rgba(170, 255, 0, 0.4);
+  color: #AAFF00;
+}
 
 /* Chat prose styles */
 .chat-prose h1, .chat-prose h2, .chat-prose h3 {
@@ -63,14 +216,6 @@ body {
   margin: 1rem 0;
   color: var(--muted);
   font-style: italic;
-}
-
-/* Gradient text */
-.gradient-text {
-  background: linear-gradient(135deg, #AAFF00 0%, #00C853 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 /* Typing animation */
@@ -117,3 +262,10 @@ body {
   transform: translateY(-2px);
 }
 .btn-glow { transition: transform .2s, box-shadow .2s, opacity .15s; }
+
+/* Float animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+.float { animation: float 6s ease-in-out infinite; }

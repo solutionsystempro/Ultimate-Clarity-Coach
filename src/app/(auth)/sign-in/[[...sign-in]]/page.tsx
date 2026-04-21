@@ -50,13 +50,13 @@ export default function AuthPage({ searchParams }: { searchParams: { tab?: strin
 
   return (
     <div style={{ minHeight: '100vh', background: '#08080B', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', position: 'relative' }}>
-      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center top, rgba(0,200,83,0.10) 0%, transparent 60%)', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center top, rgba(170,255,0,0.10) 0%, transparent 60%)', pointerEvents: 'none' }} />
       <div style={{ width: '100%', maxWidth: 440, position: 'relative' }}>
 
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: '#00C853', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: '#AAFF00', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <span style={{ color: '#000', fontWeight: 900, fontSize: 14 }}>B</span>
             </div>
             <span style={{ fontWeight: 700, fontSize: 16, color: '#EFEFEF', letterSpacing: '-.02em' }}>Business Clarity Coach</span>
@@ -72,13 +72,13 @@ export default function AuthPage({ searchParams }: { searchParams: { tab?: strin
           <div style={{ display: 'flex', marginBottom: 24, border: '1px solid #1F1F28', borderRadius: 10, overflow: 'hidden' }}>
             <button
               onClick={() => { setTab('signup'); setError('') }}
-              style={{ flex: 1, padding: '11px', background: tab === 'signup' ? '#00C853' : 'transparent', border: 'none', color: tab === 'signup' ? '#000' : '#7A7A8C', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', transition: 'all .15s' }}
+              style={{ flex: 1, padding: '11px', background: tab === 'signup' ? '#AAFF00' : 'transparent', border: 'none', color: tab === 'signup' ? '#000' : '#7A7A8C', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', transition: 'all .15s' }}
             >
               Create Account
             </button>
             <button
               onClick={() => { setTab('signin'); setError('') }}
-              style={{ flex: 1, padding: '11px', background: tab === 'signin' ? '#00C853' : 'transparent', border: 'none', color: tab === 'signin' ? '#000' : '#7A7A8C', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', transition: 'all .15s' }}
+              style={{ flex: 1, padding: '11px', background: tab === 'signin' ? '#AAFF00' : 'transparent', border: 'none', color: tab === 'signin' ? '#000' : '#7A7A8C', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', transition: 'all .15s' }}
             >
               Sign In
             </button>
@@ -88,7 +88,7 @@ export default function AuthPage({ searchParams }: { searchParams: { tab?: strin
           <button
             onClick={handleGoogle}
             style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, padding: '12px', background: '#16161E', border: '1px solid #1F1F28', borderRadius: 10, color: '#EFEFEF', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', marginBottom: 16, transition: 'border-color .15s' }}
-            onMouseOver={e => (e.currentTarget.style.borderColor = 'rgba(0,200,83,0.4)')}
+            onMouseOver={e => (e.currentTarget.style.borderColor = 'rgba(170,255,0,0.4)')}
             onMouseOut={e => (e.currentTarget.style.borderColor = '#1F1F28')}
           >
             <svg width="18" height="18" viewBox="0 0 18 18">
@@ -116,7 +116,7 @@ export default function AuthPage({ searchParams }: { searchParams: { tab?: strin
               onChange={e => setEmail(e.target.value)}
               autoComplete="email"
               style={{ width: '100%', padding: '12px 14px', background: '#08080B', border: '1px solid #1F1F28', borderRadius: 10, color: '#EFEFEF', fontSize: 14, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box', transition: 'border-color .15s' }}
-              onFocus={e => (e.target.style.borderColor = 'rgba(0,200,83,0.5)')}
+              onFocus={e => (e.target.style.borderColor = 'rgba(170,255,0,0.5)')}
               onBlur={e => (e.target.style.borderColor = '#1F1F28')}
             />
             <input
@@ -127,18 +127,18 @@ export default function AuthPage({ searchParams }: { searchParams: { tab?: strin
               autoComplete={tab === 'signup' ? 'new-password' : 'current-password'}
               onKeyDown={e => e.key === 'Enter' && handleEmailAuth()}
               style={{ width: '100%', padding: '12px 14px', background: '#08080B', border: '1px solid #1F1F28', borderRadius: 10, color: '#EFEFEF', fontSize: 14, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box', transition: 'border-color .15s' }}
-              onFocus={e => (e.target.style.borderColor = 'rgba(0,200,83,0.5)')}
+              onFocus={e => (e.target.style.borderColor = 'rgba(170,255,0,0.5)')}
               onBlur={e => (e.target.style.borderColor = '#1F1F28')}
             />
 
             {error && (
-              <p style={{ fontSize: 13, color: error.includes('Check your email') ? '#00C853' : '#FF3B30', margin: 0 }}>{error}</p>
+              <p style={{ fontSize: 13, color: error.includes('Check your email') ? '#AAFF00' : '#FF3B30', margin: 0 }}>{error}</p>
             )}
 
             <button
               onClick={handleEmailAuth}
               disabled={loading}
-              style={{ width: '100%', padding: '13px', background: '#00C853', border: 'none', borderRadius: 10, color: '#000', fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', opacity: loading ? 0.7 : 1, transition: 'opacity .15s' }}
+              style={{ width: '100%', padding: '13px', background: '#AAFF00', border: 'none', borderRadius: 10, color: '#000', fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', opacity: loading ? 0.7 : 1, transition: 'opacity .15s' }}
             >
               {loading ? 'Please wait...' : tab === 'signup' ? 'Create Account →' : 'Sign In →'}
             </button>

@@ -20,7 +20,7 @@ function useReveal() {
 // ─── Data ────────────────────────────────────────────────────
 
 const coaches = [
-  { name: 'Alex Hormozi', lens: 'OFFER MATH', color: 'rgba(0,200,83,0.08)', border: 'rgba(0,200,83,0.20)', tag: '#00C853' },
+  { name: 'Alex Hormozi', lens: 'OFFER MATH', color: 'rgba(170,255,0,0.08)', border: 'rgba(170,255,0,0.20)', tag: '#AAFF00' },
   { name: 'Tony Robbins', lens: 'PSYCHOLOGY', color: 'rgba(255,140,0,0.07)', border: 'rgba(255,140,0,0.18)', tag: '#FF8C00' },
   { name: 'Eli Wilde', lens: 'CERTAINTY', color: 'rgba(139,92,246,0.07)', border: 'rgba(139,92,246,0.18)', tag: '#8B5CF6' },
   { name: 'Grant Cardone', lens: '10X URGENCY', color: 'rgba(239,68,68,0.07)', border: 'rgba(239,68,68,0.18)', tag: '#EF4444' },
@@ -80,13 +80,13 @@ export default function LandingPage() {
       {/* ── HERO ── */}
       <section style={{ position: 'relative', overflow: 'hidden', padding: '96px 24px 80px', textAlign: 'center' }}>
         {/* Radial glow */}
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center top, rgba(0,200,83,0.13) 0%, transparent 65%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center top, rgba(170,255,0,0.13) 0%, transparent 65%)', pointerEvents: 'none' }} />
 
         <div style={{ maxWidth: 920, margin: '0 auto', position: 'relative' }}>
 
           {/* Live badge */}
           <div className="reveal" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 28 }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '5px 14px', borderRadius: 100, border: '1px solid rgba(0,200,83,0.25)', background: 'rgba(0,200,83,0.10)' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '5px 14px', borderRadius: 100, border: '1px solid rgba(170,255,0,0.25)', background: 'rgba(170,255,0,0.10)' }}>
               <span className="pulse-dot" style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--accent)', display: 'block', flexShrink: 0 }} />
               <span style={{ color: 'var(--accent)', fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase' }}>Now Live — $30,000 of Coaching, on Demand</span>
             </div>
@@ -144,7 +144,7 @@ export default function LandingPage() {
       <section style={{ padding: '72px 24px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
         <div style={{ maxWidth: 920, margin: '0 auto' }}>
           <div className="reveal" style={{ textAlign: 'center', marginBottom: 48 }}>
-            <div style={{ display: 'inline-block', padding: '5px 14px', borderRadius: 100, border: '1px solid rgba(0,200,83,0.25)', background: 'rgba(0,200,83,0.08)', color: 'var(--accent)', fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 20 }}>
+            <div style={{ display: 'inline-block', padding: '5px 14px', borderRadius: 100, border: '1px solid rgba(170,255,0,0.25)', background: 'rgba(170,255,0,0.08)', color: 'var(--accent)', fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 20 }}>
               The Knowledge Base
             </div>
             <h2 style={{ fontSize: 'clamp(26px, 4vw, 42px)', fontWeight: 900, letterSpacing: '-.03em', margin: '0 0 14px' }}>
@@ -174,7 +174,7 @@ export default function LandingPage() {
       <section style={{ padding: '72px 24px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
         <div style={{ maxWidth: 920, margin: '0 auto' }}>
           <div className="reveal" style={{ textAlign: 'center', marginBottom: 56 }}>
-            <div style={{ display: 'inline-block', padding: '5px 14px', borderRadius: 100, border: '1px solid rgba(0,200,83,0.25)', background: 'rgba(0,200,83,0.08)', color: 'var(--accent)', fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 20 }}>
+            <div style={{ display: 'inline-block', padding: '5px 14px', borderRadius: 100, border: '1px solid rgba(170,255,0,0.25)', background: 'rgba(170,255,0,0.08)', color: 'var(--accent)', fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 20 }}>
               How It Works
             </div>
             <h2 style={{ fontSize: 'clamp(26px, 4vw, 42px)', fontWeight: 900, letterSpacing: '-.03em', margin: 0 }}>
@@ -186,7 +186,7 @@ export default function LandingPage() {
               <div key={s.n} className={`reveal reveal-delay-${(i + 1) as 1 | 2 | 3}`}
                 style={{ padding: '28px 24px', borderRadius: 16, background: 'var(--surface)', border: '1px solid var(--border)', position: 'relative', overflow: 'hidden' }}>
                 <div style={{ position: 'absolute', top: 16, right: 20, fontSize: 48, fontWeight: 900, color: 'rgba(255,255,255,0.03)', lineHeight: 1, userSelect: 'none' }}>{s.n}</div>
-                <div style={{ display: 'inline-flex', width: 36, height: 36, borderRadius: 10, background: 'rgba(0,200,83,0.12)', border: '1px solid rgba(0,200,83,0.22)', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+                <div style={{ display: 'inline-flex', width: 36, height: 36, borderRadius: 10, background: 'rgba(170,255,0,0.12)', border: '1px solid rgba(170,255,0,0.22)', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
                   <span style={{ color: 'var(--accent)', fontSize: 13, fontWeight: 900 }}>{s.n}</span>
                 </div>
                 <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', margin: '0 0 10px' }}>{s.title}</h3>
@@ -201,7 +201,7 @@ export default function LandingPage() {
       <section style={{ padding: '72px 24px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
         <div style={{ maxWidth: 760, margin: '0 auto' }}>
           <div className="reveal" style={{ textAlign: 'center', marginBottom: 48 }}>
-            <div style={{ display: 'inline-block', padding: '5px 14px', borderRadius: 100, border: '1px solid rgba(0,200,83,0.25)', background: 'rgba(0,200,83,0.08)', color: 'var(--accent)', fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 20 }}>
+            <div style={{ display: 'inline-block', padding: '5px 14px', borderRadius: 100, border: '1px solid rgba(170,255,0,0.25)', background: 'rgba(170,255,0,0.08)', color: 'var(--accent)', fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 20 }}>
               Pricing
             </div>
             <h2 style={{ fontSize: 'clamp(26px, 4vw, 42px)', fontWeight: 900, letterSpacing: '-.03em', margin: '0 0 12px' }}>
@@ -227,7 +227,7 @@ export default function LandingPage() {
                 ))}
               </ul>
               <Link href="/sign-up" style={{ display: 'block', textAlign: 'center', padding: '14px', borderRadius: 10, border: '1px solid var(--border)', color: 'var(--text)', fontWeight: 600, fontSize: 14, textDecoration: 'none', transition: 'border-color .2s, background .2s' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(0,200,83,0.4)'; (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(0,200,83,0.05)' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(170,255,0,0.4)'; (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(170,255,0,0.05)' }}
                 onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'var(--border)'; (e.currentTarget as HTMLAnchorElement).style.background = 'transparent' }}
               >
                 Get started free
@@ -235,9 +235,9 @@ export default function LandingPage() {
             </div>
 
             {/* Premium */}
-            <div className="reveal reveal-delay-1" style={{ padding: '32px', borderRadius: 16, background: 'rgba(0,200,83,0.04)', border: '1px solid rgba(0,200,83,0.28)', position: 'relative', overflow: 'hidden' }}>
+            <div className="reveal reveal-delay-1" style={{ padding: '32px', borderRadius: 16, background: 'rgba(170,255,0,0.04)', border: '1px solid rgba(170,255,0,0.28)', position: 'relative', overflow: 'hidden' }}>
               <div style={{ position: 'absolute', top: 0, right: 0, background: 'var(--accent)', color: '#000', fontSize: 10, fontWeight: 800, letterSpacing: '.08em', padding: '5px 14px', borderRadius: '0 16px 0 8px' }}>MOST POPULAR</div>
-              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 120, background: 'radial-gradient(ellipse at bottom, rgba(0,200,83,0.06), transparent 70%)', pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 120, background: 'radial-gradient(ellipse at bottom, rgba(170,255,0,0.06), transparent 70%)', pointerEvents: 'none' }} />
               <div style={{ marginBottom: 24 }}>
                 <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent)', letterSpacing: '.08em', textTransform: 'uppercase', margin: '0 0 12px' }}>Premium</h3>
                 <div style={{ fontSize: 44, fontWeight: 900, letterSpacing: '-.03em', margin: '0 0 2px' }}>
@@ -288,7 +288,7 @@ export default function LandingPage() {
 
       {/* ── FINAL CTA ── */}
       <section style={{ padding: '88px 24px', borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at top, rgba(0,200,83,0.09), transparent 65%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at top, rgba(170,255,0,0.09), transparent 65%)', pointerEvents: 'none' }} />
         <div className="reveal" style={{ maxWidth: 560, margin: '0 auto', textAlign: 'center', position: 'relative' }}>
           <h2 style={{ fontSize: 'clamp(28px, 4.5vw, 46px)', fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1.08, margin: '0 0 16px' }}>
             Ready to get clarity?

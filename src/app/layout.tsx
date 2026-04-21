@@ -28,7 +28,31 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               background: '#0F0F14',
               color: '#EFEFEF',
               border: '1px solid #1F1F28',
-              fontSize: '13px'
+              fontSize: '13px',
+              borderRadius: '12px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+            },
+            success: {
+              style: {
+                background: '#0F0F14',
+                color: '#EFEFEF',
+                border: '1px solid rgba(170,255,0,0.35)',
+                borderLeft: '3px solid #AAFF00',
+                fontSize: '13px',
+                borderRadius: '12px',
+              },
+              iconTheme: { primary: '#AAFF00', secondary: '#08080B' },
+            },
+            error: {
+              style: {
+                background: '#0F0F14',
+                color: '#EFEFEF',
+                border: '1px solid rgba(255,59,48,0.35)',
+                borderLeft: '3px solid #FF3B30',
+                fontSize: '13px',
+                borderRadius: '12px',
+              },
+              iconTheme: { primary: '#FF3B30', secondary: '#08080B' },
             },
           }}
         />

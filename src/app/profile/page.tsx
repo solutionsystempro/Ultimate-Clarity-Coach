@@ -118,7 +118,7 @@ export default function ProfilePage() {
               <input
                 value={profile.business_name}
                 onChange={e => update('business_name', e.target.value)}
-                className="w-full bg-[#0F0F14] border border-[#1F1F28] rounded-xl px-4 py-3 text-sm text-[#EFEFEF] placeholder-[#7A7A8C] focus:outline-none focus:border-[rgba(0,200,83,0.50)] transition-colors"
+                className="w-full bg-[#0F0F14] border border-[#1F1F28] rounded-xl px-4 py-3 text-sm text-[#EFEFEF] placeholder-[#7A7A8C] focus:outline-none focus:border-[rgba(170,255,0,0.50)] transition-colors"
                 placeholder="e.g. Apex Consulting"
               />
             </Field>
@@ -126,7 +126,7 @@ export default function ProfilePage() {
               <input
                 value={profile.industry}
                 onChange={e => update('industry', e.target.value)}
-                className="w-full bg-[#0F0F14] border border-[#1F1F28] rounded-xl px-4 py-3 text-sm text-[#EFEFEF] placeholder-[#7A7A8C] focus:outline-none focus:border-[rgba(0,200,83,0.50)] transition-colors"
+                className="w-full bg-[#0F0F14] border border-[#1F1F28] rounded-xl px-4 py-3 text-sm text-[#EFEFEF] placeholder-[#7A7A8C] focus:outline-none focus:border-[rgba(170,255,0,0.50)] transition-colors"
                 placeholder="e.g. Marketing, SaaS, Real Estate..."
               />
             </Field>
@@ -136,7 +136,7 @@ export default function ProfilePage() {
             <select
               value={profile.stage}
               onChange={e => update('stage', e.target.value)}
-              className="w-full bg-[#0F0F14] border border-[#1F1F28] rounded-xl px-4 py-3 text-sm text-[#EFEFEF] focus:outline-none focus:border-[rgba(0,200,83,0.50)] transition-colors"
+              className="w-full bg-[#0F0F14] border border-[#1F1F28] rounded-xl px-4 py-3 text-sm text-[#EFEFEF] focus:outline-none focus:border-[rgba(170,255,0,0.50)] transition-colors"
             >
               <option value="" className="text-[#7A7A8C]">Select your stage...</option>
               {stages.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
@@ -149,7 +149,7 @@ export default function ProfilePage() {
                 type="number"
                 value={profile.monthly_revenue}
                 onChange={e => update('monthly_revenue', e.target.value)}
-                className="w-full bg-[#0F0F14] border border-[#1F1F28] rounded-xl px-4 py-3 text-sm text-[#EFEFEF] placeholder-[#7A7A8C] focus:outline-none focus:border-[rgba(0,200,83,0.50)] transition-colors"
+                className="w-full bg-[#0F0F14] border border-[#1F1F28] rounded-xl px-4 py-3 text-sm text-[#EFEFEF] placeholder-[#7A7A8C] focus:outline-none focus:border-[rgba(170,255,0,0.50)] transition-colors"
                 placeholder="e.g. 5000"
               />
             </Field>
@@ -158,7 +158,7 @@ export default function ProfilePage() {
                 type="number"
                 value={profile.target_revenue}
                 onChange={e => update('target_revenue', e.target.value)}
-                className="w-full bg-[#0F0F14] border border-[#1F1F28] rounded-xl px-4 py-3 text-sm text-[#EFEFEF] placeholder-[#7A7A8C] focus:outline-none focus:border-[rgba(0,200,83,0.50)] transition-colors"
+                className="w-full bg-[#0F0F14] border border-[#1F1F28] rounded-xl px-4 py-3 text-sm text-[#EFEFEF] placeholder-[#7A7A8C] focus:outline-none focus:border-[rgba(170,255,0,0.50)] transition-colors"
                 placeholder="e.g. 25000"
               />
             </Field>
@@ -169,7 +169,7 @@ export default function ProfilePage() {
               value={profile.current_offer}
               onChange={e => update('current_offer', e.target.value)}
               rows={3}
-              className="w-full bg-[#0F0F14] border border-[#1F1F28] rounded-xl px-4 py-3 text-sm text-[#EFEFEF] placeholder-[#7A7A8C] focus:outline-none focus:border-[rgba(0,200,83,0.50)] transition-colors resize-none"
+              className="w-full bg-[#0F0F14] border border-[#1F1F28] rounded-xl px-4 py-3 text-sm text-[#EFEFEF] placeholder-[#7A7A8C] focus:outline-none focus:border-[rgba(170,255,0,0.50)] transition-colors resize-none"
               placeholder="e.g. 90-day marketing coaching program for e-commerce brands doing $100k–$1M/year..."
             />
           </Field>
@@ -179,7 +179,7 @@ export default function ProfilePage() {
               value={profile.target_customer}
               onChange={e => update('target_customer', e.target.value)}
               rows={3}
-              className="w-full bg-[#0F0F14] border border-[#1F1F28] rounded-xl px-4 py-3 text-sm text-[#EFEFEF] placeholder-[#7A7A8C] focus:outline-none focus:border-[rgba(0,200,83,0.50)] transition-colors resize-none"
+              className="w-full bg-[#0F0F14] border border-[#1F1F28] rounded-xl px-4 py-3 text-sm text-[#EFEFEF] placeholder-[#7A7A8C] focus:outline-none focus:border-[rgba(170,255,0,0.50)] transition-colors resize-none"
               placeholder="e.g. B2B SaaS founders with 5–50 employees who are struggling with outbound sales..."
             />
           </Field>
@@ -189,7 +189,7 @@ export default function ProfilePage() {
               value={profile.biggest_challenge}
               onChange={e => update('biggest_challenge', e.target.value)}
               rows={3}
-              className="w-full bg-[#0F0F14] border border-[#1F1F28] rounded-xl px-4 py-3 text-sm text-[#EFEFEF] placeholder-[#7A7A8C] focus:outline-none focus:border-[rgba(0,200,83,0.50)] transition-colors resize-none"
+              className="w-full bg-[#0F0F14] border border-[#1F1F28] rounded-xl px-4 py-3 text-sm text-[#EFEFEF] placeholder-[#7A7A8C] focus:outline-none focus:border-[rgba(170,255,0,0.50)] transition-colors resize-none"
               placeholder="Be honest. What's the #1 thing blocking your growth right now?"
             />
           </Field>
@@ -199,7 +199,7 @@ export default function ProfilePage() {
               value={profile.goals}
               onChange={e => update('goals', e.target.value)}
               rows={3}
-              className="w-full bg-[#0F0F14] border border-[#1F1F28] rounded-xl px-4 py-3 text-sm text-[#EFEFEF] placeholder-[#7A7A8C] focus:outline-none focus:border-[rgba(0,200,83,0.50)] transition-colors resize-none"
+              className="w-full bg-[#0F0F14] border border-[#1F1F28] rounded-xl px-4 py-3 text-sm text-[#EFEFEF] placeholder-[#7A7A8C] focus:outline-none focus:border-[rgba(170,255,0,0.50)] transition-colors resize-none"
               placeholder="e.g. $30k/month, 10 retainer clients, fully booked calendar, team of 3..."
             />
           </Field>

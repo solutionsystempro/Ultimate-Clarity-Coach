@@ -21,7 +21,9 @@ create table if not exists documents (
   embedding vector(1536),
   metadata jsonb default '{}',
   source_file text,
-  source_type text, -- 'pdf', 'video', 'audio', 'docx', 'sales_call'
+  source_type text, -- 'pdf', 'video', 'audio', 'docx', 'text'
+  coach text default 'general', -- 'hormozi', 'robbins', 'wilde', 'framework', 'cross-coach', etc.
+  topic text default 'general', -- 'offers', 'mindset', 'sales-scripts', 'framework', etc.
   chunk_index integer,
   created_at timestamptz default now()
 );
@@ -34,6 +36,11 @@ create index if not exists documents_embedding_idx
 -- Full text search index
 create index if not exists documents_content_idx
   on documents using gin(to_tsvector('english', content));
+
+-- Index for coach/topic filtering
+create index if not exists documents_coach_idx on documents (coach);
+create index if not exists documents_topic_idx on documents (topic);
+create index if not exists documents_coach_topic_idx on documents (coach, topic);
 
 -- ============================================
 -- USERS / SUBSCRIPTIONS
@@ -100,6 +107,7 @@ create table if not exists business_profiles (
 -- MATCH FUNCTION FOR RAG
 -- ============================================
 
+-- Basic match function (backwards compatible)
 create or replace function match_documents(
   query_embedding vector(1536),
   match_threshold float default 0.7,
@@ -111,6 +119,8 @@ returns table (
   metadata jsonb,
   source_file text,
   source_type text,
+  coach text,
+  topic text,
   similarity float
 )
 language sql stable
@@ -121,9 +131,49 @@ as $$
     documents.metadata,
     documents.source_file,
     documents.source_type,
+    documents.coach,
+    documents.topic,
     1 - (documents.embedding <=> query_embedding) as similarity
   from documents
   where 1 - (documents.embedding <=> query_embedding) > match_threshold
+  order by documents.embedding <=> query_embedding
+  limit match_count;
+$$;
+
+-- Coach-filtered match function for mentor-mode RAG
+create or replace function match_documents_by_coach(
+  query_embedding vector(1536),
+  filter_coaches text[] default '{}',
+  match_threshold float default 0.65,
+  match_count int default 8
+)
+returns table (
+  id bigint,
+  content text,
+  metadata jsonb,
+  source_file text,
+  source_type text,
+  coach text,
+  topic text,
+  similarity float
+)
+language sql stable
+as $$
+  select
+    documents.id,
+    documents.content,
+    documents.metadata,
+    documents.source_file,
+    documents.source_type,
+    documents.coach,
+    documents.topic,
+    1 - (documents.embedding <=> query_embedding) as similarity
+  from documents
+  where 1 - (documents.embedding <=> query_embedding) > match_threshold
+    and (
+      array_length(filter_coaches, 1) is null
+      or documents.coach = any(filter_coaches)
+    )
   order by documents.embedding <=> query_embedding
   limit match_count;
 $$;

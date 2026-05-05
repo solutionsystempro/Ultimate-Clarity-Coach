@@ -188,10 +188,13 @@ export async function POST(req: NextRequest) {
         outputRemaining === '0' ? 'output tokens'
         : inputRemaining === '0' ? 'input tokens'
         : requestsRemaining === '0' ? 'requests'
-        : 'tokens'
+        : null
       const wait = retryAfter ? ` Retry in ~${retryAfter}s.` : ''
+      // Prefer Anthropic's own message — it usually says "exceeded X
+      // tokens-per-minute, please wait Y seconds" verbatim.
+      const detail = apiMsg || (dim ? `Hit ${dim} cap.` : 'Token bucket depleted.')
       return NextResponse.json(
-        { error: `Anthropic rate limit hit (${dim}).${wait} Tier 1 caps: 30K input TPM / 8K output TPM / 50 RPM.` },
+        { error: `Rate limited: ${detail}${wait}` },
         { status: 503 }
       )
     }

@@ -130,7 +130,31 @@ export async function POST(req: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Chat API error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    const err = error as { status?: number; message?: string; name?: string; error?: { type?: string; message?: string } }
+    const status = err?.status
+    const apiType = err?.error?.type
+    const apiMsg = err?.error?.message
+    console.error('Chat API error:', {
+      name: err?.name,
+      status,
+      message: err?.message,
+      apiType,
+      apiMsg,
+    })
+
+    if (status === 401) {
+      return NextResponse.json({ error: 'AI provider auth failed. Check ANTHROPIC_API_KEY / OPENAI_API_KEY in Vercel env.' }, { status: 500 })
+    }
+    if (status === 429 || apiType === 'rate_limit_error') {
+      return NextResponse.json({ error: 'AI provider rate limit hit. Try again in a moment.' }, { status: 503 })
+    }
+    if (apiType === 'insufficient_quota' || apiType === 'billing_hard_limit_reached' || /credit|quota|billing/i.test(apiMsg || err?.message || '')) {
+      return NextResponse.json({ error: 'AI provider out of credits. Top up Anthropic or OpenAI billing.' }, { status: 503 })
+    }
+
+    return NextResponse.json(
+      { error: apiMsg || err?.message || 'Internal server error' },
+      { status: 500 }
+    )
   }
 }

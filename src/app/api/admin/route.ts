@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAuthClient, createServiceClient } from '@/lib/supabase/server'
 
-const ADMIN_USER_ID = process.env.ADMIN_USER_ID
+const ADMIN_EMAIL = 'solutionsystempro@gmail.com'
 
 export async function GET(req: NextRequest) {
   const supabaseAuth = createAuthClient(req)
   const { data: { user } } = await supabaseAuth.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  if (ADMIN_USER_ID && user.id !== ADMIN_USER_ID) {
+  if (user.email?.toLowerCase() !== ADMIN_EMAIL) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 

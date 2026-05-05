@@ -2,6 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 const PROTECTED_ROUTES = ['/coach', '/profile', '/admin']
+const ADMIN_EMAIL = 'solutionsystempro@gmail.com'
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -38,6 +39,10 @@ export async function middleware(request: NextRequest) {
     const signInUrl = new URL('/sign-in', request.url)
     signInUrl.searchParams.set('redirectTo', pathname)
     return NextResponse.redirect(signInUrl)
+  }
+
+  if (pathname.startsWith('/admin') && user.email?.toLowerCase() !== ADMIN_EMAIL) {
+    return NextResponse.redirect(new URL('/coach', request.url))
   }
 
   return response

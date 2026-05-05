@@ -314,7 +314,12 @@ export default function CoachPage() {
       }
 
       if (!res.ok) {
-        toast.error('Something went wrong. Please try again.')
+        let detail = 'Something went wrong. Please try again.'
+        try {
+          const body = await res.json()
+          if (body?.error) detail = body.error
+        } catch {}
+        toast.error(detail)
         setMessages(prev => prev.slice(0, -1))
         setIsStreaming(false)
         return

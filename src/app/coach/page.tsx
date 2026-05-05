@@ -7,7 +7,7 @@ import remarkGfm from 'remark-gfm'
 import toast from 'react-hot-toast'
 import {
   Send, Plus, MessageSquare, Trash2, User as UserIcon, LogOut,
-  ChevronLeft, ChevronRight, Sparkles, Settings, Users, Download, FileText, BarChart2,
+  ChevronLeft, ChevronRight, Sparkles, Users, Download, FileText, BarChart2,
 } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
@@ -426,13 +426,17 @@ export default function CoachPage() {
                 rel="noopener noreferrer"
                 className="flex flex-col gap-0.5 px-3 py-2.5 mb-1 rounded-xl border border-[rgba(170,255,0,0.22)] bg-[rgba(170,255,0,0.04)] hover:bg-[rgba(170,255,0,0.08)] transition-colors"
               >
-                <span className="text-[10px] font-bold text-accent uppercase tracking-widest">Build Your Offer Live</span>
-                <span className="text-xs text-neutral-300 leading-snug">No offer doc yet? Ian builds yours in 90 min.</span>
-                <span className="text-[10px] font-semibold text-accent mt-0.5">AI Foundation — $97 →</span>
+                <span className="text-[10px] font-bold text-accent uppercase tracking-widest">AI Foundation Workshop</span>
+                <span className="text-xs text-neutral-300 leading-snug">Build your offer doc live with Ian in 90 min.</span>
+                <span className="text-[10px] font-semibold text-accent mt-0.5">Click here →</span>
               </a>
-              <Link href="/profile" className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-neutral-400 hover:bg-white/5 hover:text-white transition-colors text-xs">
-                <Settings className="w-3.5 h-3.5" />
-                Business Profile
+              <Link
+                href="/profile"
+                className="flex flex-col gap-0.5 px-3 py-2.5 mb-1 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-colors"
+              >
+                <span className="text-[10px] font-bold text-neutral-200 uppercase tracking-widest">Business Profile</span>
+                <span className="text-xs text-neutral-400 leading-snug">Add yours for better, more personalized outputs.</span>
+                <span className="text-[10px] font-semibold text-neutral-300 mt-0.5">Set it up →</span>
               </Link>
               <Link href="/admin" className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-neutral-400 hover:bg-white/5 hover:text-white transition-colors text-xs">
                 <BarChart2 className="w-3.5 h-3.5" />

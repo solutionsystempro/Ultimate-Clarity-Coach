@@ -183,6 +183,11 @@ export async function POST(req: NextRequest) {
     if (status === 401) {
       return NextResponse.json({ error: 'AI provider auth failed. Check ANTHROPIC_API_KEY / OPENAI_API_KEY in Vercel env.' }, { status: 500 })
     }
+    // OpenAI returns insufficient_quota with HTTP 429, so check this BEFORE
+    // the generic rate-limit branch or it gets mislabeled as throttling.
+    if (apiType === 'insufficient_quota' || apiType === 'billing_hard_limit_reached' || /quota|billing|payment/i.test(apiMsg || err?.message || '')) {
+      return NextResponse.json({ error: 'AI provider out of credits. Top up OpenAI billing at platform.openai.com.' }, { status: 503 })
+    }
     if (status === 429 || apiType === 'rate_limit_error') {
       const dim =
         outputRemaining === '0' ? 'output tokens'
@@ -190,16 +195,11 @@ export async function POST(req: NextRequest) {
         : requestsRemaining === '0' ? 'requests'
         : null
       const wait = retryAfter ? ` Retry in ~${retryAfter}s.` : ''
-      // Prefer Anthropic's own message — it usually says "exceeded X
-      // tokens-per-minute, please wait Y seconds" verbatim.
       const detail = apiMsg || (dim ? `Hit ${dim} cap.` : 'Token bucket depleted.')
       return NextResponse.json(
         { error: `Rate limited: ${detail}${wait}` },
         { status: 503 }
       )
-    }
-    if (apiType === 'insufficient_quota' || apiType === 'billing_hard_limit_reached' || /credit|quota|billing/i.test(apiMsg || err?.message || '')) {
-      return NextResponse.json({ error: 'AI provider out of credits. Top up Anthropic or OpenAI billing.' }, { status: 503 })
     }
 
     return NextResponse.json(

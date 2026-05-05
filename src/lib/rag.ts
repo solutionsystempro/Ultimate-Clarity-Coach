@@ -25,7 +25,16 @@ export async function retrieveContext(
   matchCount = 8,
   threshold = 0.65
 ): Promise<DocumentChunk[]> {
-  const embedding = await getEmbedding(query)
+  let embedding: number[]
+  try {
+    embedding = await getEmbedding(query)
+  } catch (err) {
+    // If OpenAI embeddings fail (quota, key, network), don't crash the chat.
+    // Skip RAG and let the model answer without knowledge-base context.
+    console.error('RAG embedding failed — answering without KB context:', err)
+    return []
+  }
+
   const supabase = createKnowledgeBaseClient()
 
   const { data, error } = await supabase.rpc('match_documents', {

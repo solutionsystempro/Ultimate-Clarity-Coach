@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { createAuthClient, createServiceClient } from '@/lib/supabase/server'
-import { retrieveContext, buildSystemPrompt } from '@/lib/rag'
+import { retrieveContext, buildSystemBlocks } from '@/lib/rag'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -67,13 +67,15 @@ export async function POST(req: NextRequest) {
 
     // RAG: retrieve relevant knowledge base chunks
     const context = await retrieveContext(lastUserMessage)
-    const systemPrompt = buildSystemPrompt(context, mentor || 'standard', profile || undefined)
+    const systemBlocks = buildSystemBlocks(context, mentor || 'standard', profile || undefined)
 
-    // Stream response from Claude
+    // Stream response from Claude.
+    // System is passed as content blocks so the static prefix can be cached.
+    // Cache reads do NOT count against input TPM rate limits.
     const stream = await anthropic.messages.stream({
       model: 'claude-sonnet-4-6',
       max_tokens: 2048,
-      system: systemPrompt,
+      system: systemBlocks,
       messages: messages.slice(-20),
     })
 

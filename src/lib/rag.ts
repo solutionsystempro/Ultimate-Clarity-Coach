@@ -1,55 +1,4 @@
-import OpenAI from 'openai'
-import { createKnowledgeBaseClient } from '@/lib/supabase/server'
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-
-export interface DocumentChunk {
-  id: number
-  content: string
-  metadata: Record<string, unknown>
-  source_file: string
-  source_type: string
-  similarity: number
-}
-
-export async function getEmbedding(text: string): Promise<number[]> {
-  const response = await openai.embeddings.create({
-    model: 'text-embedding-3-small',
-    input: text.slice(0, 8000),
-  })
-  return response.data[0].embedding
-}
-
-export async function retrieveContext(
-  query: string,
-  matchCount = 8,
-  threshold = 0.65
-): Promise<DocumentChunk[]> {
-  let embedding: number[]
-  try {
-    embedding = await getEmbedding(query)
-  } catch (err) {
-    // If OpenAI embeddings fail (quota, key, network), don't crash the chat.
-    // Skip RAG and let the model answer without knowledge-base context.
-    console.error('RAG embedding failed — answering without KB context:', err)
-    return []
-  }
-
-  const supabase = createKnowledgeBaseClient()
-
-  const { data, error } = await supabase.rpc('match_documents', {
-    query_embedding: embedding,
-    match_threshold: threshold,
-    match_count: matchCount,
-  })
-
-  if (error) {
-    console.error('RAG retrieval error:', error)
-    return []
-  }
-
-  return data as DocumentChunk[]
-}
+import { KNOWLEDGE_BASE } from '@/lib/knowledge-base.generated'
 
 export type MentorType = 'standard' | 'hormozi' | 'robbins' | 'wilde'
 
@@ -561,8 +510,13 @@ export type SystemBlock = {
   cache_control?: { type: 'ephemeral' }
 }
 
+const KNOWLEDGE_SECTION = `
+──────────────────────────────────────────────────────────────
+📚 KNOWLEDGE BASE (Ian's curated source material — treat as authoritative)
+${KNOWLEDGE_BASE}
+`
+
 export function buildSystemBlocks(
-  context: DocumentChunk[],
   mentor: MentorType = 'standard',
   businessProfile?: Record<string, unknown>
 ): SystemBlock[] {
@@ -570,7 +524,7 @@ export function buildSystemBlocks(
 
   // Stable prefix — identical across requests for a given mentor.
   // Cached on Anthropic side; cache reads do NOT count against TPM limit.
-  const cachedText = `${basePrompt}\n${COACHING_DELIVERY_OS}\n${CTA_AWARENESS}`
+  const cachedText = `${basePrompt}\n${COACHING_DELIVERY_OS}\n${KNOWLEDGE_SECTION}\n${CTA_AWARENESS}`
 
   const profileSection = businessProfile
     ? `
@@ -590,15 +544,7 @@ Use this context to personalize your coaching from the first message. Reference 
 `
     : ''
 
-  const knowledgeSection = context.length > 0
-    ? `
-──────────────────────────────────────────────────────────────
-📚 KNOWLEDGE BASE (treat these as your primary source of truth for this response)
-${context.map((doc, i) => `[Knowledge Base — Source ${i + 1} from ${doc.source_file}]\n${doc.content}`).join('\n\n---\n\n')}
-`
-    : ''
-
-  const dynamicText = `${profileSection}${knowledgeSection}${FINAL_DIRECTIVE}`
+  const dynamicText = `${profileSection}${FINAL_DIRECTIVE}`
 
   return [
     { type: 'text', text: cachedText, cache_control: { type: 'ephemeral' } },

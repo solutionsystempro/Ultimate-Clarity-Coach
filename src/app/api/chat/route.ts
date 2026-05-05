@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { createAuthClient, createServiceClient } from '@/lib/supabase/server'
-import { retrieveContext, buildSystemBlocks } from '@/lib/rag'
+import { buildSystemBlocks } from '@/lib/rag'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -65,9 +65,7 @@ export async function POST(req: NextRequest) {
       .eq('user_id', userId)
       .single()
 
-    // RAG: retrieve fewer chunks to keep input under Tier 1 budget.
-    const context = await retrieveContext(lastUserMessage, 4)
-    const systemBlocks = buildSystemBlocks(context, mentor || 'standard', profile || undefined)
+    const systemBlocks = buildSystemBlocks(mentor || 'standard', profile || undefined)
 
     // Stream response from Claude.
     // System is passed as content blocks so the static prefix can be cached.
@@ -87,7 +85,6 @@ export async function POST(req: NextRequest) {
         conversation_id: conversationId,
         role: 'user',
         content: lastUserMessage,
-        sources: context.map(c => ({ id: c.id, source_file: c.source_file, similarity: c.similarity })),
       })
     }
 

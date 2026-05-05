@@ -32,14 +32,6 @@ export function createServiceClient() {
   )
 }
 
-export function createKnowledgeBaseClient() {
-  return createServerClient(
-    process.env.KNOWLEDGE_BASE_SUPABASE_URL!,
-    process.env.KNOWLEDGE_BASE_SUPABASE_ANON_KEY!,
-    { cookies: { getAll: () => [], setAll: () => {} } }
-  )
-}
-
 export function createAuthClient(request: NextRequest) {
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

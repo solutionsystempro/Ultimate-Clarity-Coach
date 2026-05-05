@@ -3,22 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "bake-kb": "node scripts/bake-kb.mjs",
+    "predev": "node scripts/bake-kb.mjs",
+    "prebuild": "node scripts/bake-kb.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "ingest": "node scripts/ingest.mjs"
+    "lint": "next lint"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
     "@stripe/stripe-js": "^8.9.0",
     "@supabase/ssr": "^0.9.0",
     "@supabase/supabase-js": "^2.98.0",
-    "clerk": "^0.8.3",
     "framer-motion": "^12.35.0",
     "lucide-react": "^0.577.0",
     "next": "16.1.6",
-    "openai": "^6.27.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-hot-toast": "^2.6.0",
@@ -34,10 +34,6 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
-    "form-data": "^4.0.5",
-    "mammoth": "^1.11.0",
-    "node-fetch": "^3.3.2",
-    "pdf-parse": "^2.4.5",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

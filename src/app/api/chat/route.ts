@@ -65,18 +65,20 @@ export async function POST(req: NextRequest) {
       .eq('user_id', userId)
       .single()
 
-    // RAG: retrieve relevant knowledge base chunks
-    const context = await retrieveContext(lastUserMessage)
+    // RAG: retrieve fewer chunks to keep input under Tier 1 budget.
+    const context = await retrieveContext(lastUserMessage, 4)
     const systemBlocks = buildSystemBlocks(context, mentor || 'standard', profile || undefined)
 
     // Stream response from Claude.
     // System is passed as content blocks so the static prefix can be cached.
     // Cache reads do NOT count against input TPM rate limits.
+    // max_tokens lowered to 1024 — Tier 1 caps output TPM at 8K, so 2048
+    // would let only 4 messages/minute. 1024 doubles that to ~8.
     const stream = await anthropic.messages.stream({
       model: 'claude-sonnet-4-6',
-      max_tokens: 2048,
+      max_tokens: 1024,
       system: systemBlocks,
-      messages: messages.slice(-20),
+      messages: messages.slice(-12),
     })
 
     // Save user message to DB
@@ -112,6 +114,17 @@ export async function POST(req: NextRequest) {
           }
         }
 
+        // Log final usage so we can verify caching and watch token spend.
+        try {
+          const finalMsg = await stream.finalMessage()
+          console.log('Chat usage:', {
+            input: finalMsg.usage?.input_tokens,
+            output: finalMsg.usage?.output_tokens,
+            cache_creation: finalMsg.usage?.cache_creation_input_tokens,
+            cache_read: finalMsg.usage?.cache_read_input_tokens,
+          })
+        } catch {}
+
         // Save assistant message to DB
         if (conversationId) {
           await supabase.from('messages').insert({
@@ -132,23 +145,55 @@ export async function POST(req: NextRequest) {
       },
     })
   } catch (error) {
-    const err = error as { status?: number; message?: string; name?: string; error?: { type?: string; message?: string } }
+    const err = error as {
+      status?: number
+      message?: string
+      name?: string
+      error?: { type?: string; message?: string }
+      headers?: Record<string, string> | Headers
+    }
     const status = err?.status
     const apiType = err?.error?.type
     const apiMsg = err?.error?.message
+
+    // Extract Anthropic rate-limit headers so we can name the failing dimension.
+    const headersGet = (key: string): string | undefined => {
+      const h = err?.headers
+      if (!h) return undefined
+      if (typeof (h as Headers).get === 'function') return (h as Headers).get(key) || undefined
+      return (h as Record<string, string>)[key]
+    }
+    const inputRemaining = headersGet('anthropic-ratelimit-input-tokens-remaining')
+    const outputRemaining = headersGet('anthropic-ratelimit-output-tokens-remaining')
+    const requestsRemaining = headersGet('anthropic-ratelimit-requests-remaining')
+    const retryAfter = headersGet('retry-after')
+
     console.error('Chat API error:', {
       name: err?.name,
       status,
       message: err?.message,
       apiType,
       apiMsg,
+      inputRemaining,
+      outputRemaining,
+      requestsRemaining,
+      retryAfter,
     })
 
     if (status === 401) {
       return NextResponse.json({ error: 'AI provider auth failed. Check ANTHROPIC_API_KEY / OPENAI_API_KEY in Vercel env.' }, { status: 500 })
     }
     if (status === 429 || apiType === 'rate_limit_error') {
-      return NextResponse.json({ error: 'AI provider rate limit hit. Try again in a moment.' }, { status: 503 })
+      const dim =
+        outputRemaining === '0' ? 'output tokens'
+        : inputRemaining === '0' ? 'input tokens'
+        : requestsRemaining === '0' ? 'requests'
+        : 'tokens'
+      const wait = retryAfter ? ` Retry in ~${retryAfter}s.` : ''
+      return NextResponse.json(
+        { error: `Anthropic rate limit hit (${dim}).${wait} Tier 1 caps: 30K input TPM / 8K output TPM / 50 RPM.` },
+        { status: 503 }
+      )
     }
     if (apiType === 'insufficient_quota' || apiType === 'billing_hard_limit_reached' || /credit|quota|billing/i.test(apiMsg || err?.message || '')) {
       return NextResponse.json({ error: 'AI provider out of credits. Top up Anthropic or OpenAI billing.' }, { status: 503 })

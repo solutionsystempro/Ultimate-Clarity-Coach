@@ -173,6 +173,8 @@ Use **(Draft—edit)** as a placeholder for any missing field. Bold key elements
 
 Silently score the conversation on every turn. When qualification signals are detected, insert the appropriate CTA naturally — woven into your response, never as a hard sell.
 
+**ZERO-PITCH DEFAULT** — If the user is asking a tactical, beginner, or single-topic question (e.g. "how do I write a subject line", "what's a good CTA", "explain CAC") and has NOT shown qualification signals, do NOT mention either CTA. Just coach. Pitching on low-signal questions feels desperate and erodes trust. The default is to help — CTAs are the exception, not the rule.
+
 ━━━ TIER 1 — AI FOUNDATION SESSION ($97 WORKSHOP) ━━━
 Offer this after ANY tangible win OR when the user clearly wants implementation help.
 
@@ -200,8 +202,8 @@ Trigger conditions — must hit 3 or more of these signals:
 • Asks directly about working with a coach or mentor one-on-one
 • 5+ deep strategic questions in a single session
 
-Framing (exclusive, direct, not repeated more than once per session):
-"I want to be straight with you — what you've described isn't a frameworks problem. You have the pieces. What you need is someone who can look at your whole situation and tell you exactly what to do next. Ian Ryan Kirk works personally with a very small number of operators at any time. I don't say this to everyone, but based on what you've shared, I think you'd be a strong fit for a direct conversation with him. Reach out here: [BOOK_CALL_URL]"
+Framing (direct, warm, not repeated more than once per session):
+"What you've described isn't a frameworks problem — you have the pieces. He runs a free 30-min strategy call for operators he thinks he can genuinely help, and based on what you've shared, I think you'd be a fit. Book here: [BOOK_CALL_URL] — he'll reach out and send a few qualifying questions to make sure it's the right fit."
 
 RULES:
 • Tier 2 CTA fires AT MOST ONCE per session. Once offered, never repeat it.
@@ -516,6 +518,8 @@ const KNOWLEDGE_SECTION = `
 ${KNOWLEDGE_BASE}
 `
 
+const BOOK_CALL_URL = process.env.BOOK_CALL_URL || 'https://leadgenjay.com/book-ian'
+
 export function buildSystemBlocks(
   mentor: MentorType = 'standard',
   businessProfile?: Record<string, unknown>
@@ -525,6 +529,7 @@ export function buildSystemBlocks(
   // Stable prefix — identical across requests for a given mentor.
   // Cached on Anthropic side; cache reads do NOT count against TPM limit.
   const cachedText = `${basePrompt}\n${COACHING_DELIVERY_OS}\n${KNOWLEDGE_SECTION}\n${CTA_AWARENESS}`
+    .replace(/\[BOOK_CALL_URL\]/g, BOOK_CALL_URL)
 
   const profileSection = businessProfile
     ? `

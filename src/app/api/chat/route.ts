@@ -6,6 +6,8 @@ import { buildSystemBlocks } from '@/lib/rag'
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
 const FREE_DAILY_LIMIT = 5
+const FREE_TRIAL_LIMIT = 20
+const TRIAL_WINDOW_MS = 24 * 60 * 60 * 1000
 
 export async function POST(req: NextRequest) {
   try {
@@ -35,24 +37,42 @@ export async function POST(req: NextRequest) {
       dbUser = newUser
     }
 
-    // Check daily message limit for free users
+    // Asymmetric free limit: 20 messages in the first 24h after signup,
+    // then 5/day after that. The trial gets enough room for one real session;
+    // the recurring daily cap creates ongoing upgrade pressure.
     if (dbUser?.plan === 'free') {
-      const today = new Date().toDateString()
-      const resetDate = new Date(dbUser.messages_reset_at).toDateString()
+      // trial_starts_at lets us start a fresh 24h trial without rewriting
+      // created_at. New users default to now() at insert time.
+      const trialStart = new Date(dbUser.trial_starts_at || dbUser.created_at).getTime()
+      const inTrial = Date.now() - trialStart < TRIAL_WINDOW_MS
 
-      if (today !== resetDate) {
-        await supabase
-          .from('users')
-          .update({ messages_used_today: 0, messages_reset_at: new Date().toISOString() })
-          .eq('id', userId)
-        dbUser.messages_used_today = 0
-      }
+      if (inTrial) {
+        // Don't run the daily reset during trial — let messages_used_today
+        // accumulate as the trial counter across the 24h window.
+        if ((dbUser.messages_used_today || 0) >= FREE_TRIAL_LIMIT) {
+          return NextResponse.json(
+            { error: `Trial limit reached (${FREE_TRIAL_LIMIT} messages in your first 24h). Upgrade to Premium for unlimited coaching.` },
+            { status: 429 }
+          )
+        }
+      } else {
+        const today = new Date().toDateString()
+        const resetDate = new Date(dbUser.messages_reset_at).toDateString()
 
-      if (dbUser.messages_used_today >= FREE_DAILY_LIMIT) {
-        return NextResponse.json(
-          { error: 'Daily limit reached. Upgrade to Premium for unlimited coaching.' },
-          { status: 429 }
-        )
+        if (today !== resetDate) {
+          await supabase
+            .from('users')
+            .update({ messages_used_today: 0, messages_reset_at: new Date().toISOString() })
+            .eq('id', userId)
+          dbUser.messages_used_today = 0
+        }
+
+        if (dbUser.messages_used_today >= FREE_DAILY_LIMIT) {
+          return NextResponse.json(
+            { error: 'Daily limit reached. Upgrade to Premium for unlimited coaching.' },
+            { status: 429 }
+          )
+        }
       }
     }
 

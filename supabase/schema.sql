@@ -49,6 +49,7 @@ create table if not exists users (
   subscription_status text default 'inactive',
   messages_used_today integer default 0,
   messages_reset_at timestamptz default now(),
+  trial_starts_at timestamptz not null default now(),
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );

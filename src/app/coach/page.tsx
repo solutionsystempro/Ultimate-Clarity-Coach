@@ -301,7 +301,12 @@ export default function CoachPage() {
       })
 
       if (res.status === 429) {
-        toast.error('Daily limit reached — upgrade to unlock unlimited coaching.')
+        let limitMsg = 'Daily limit reached — upgrade to unlock unlimited coaching.'
+        try {
+          const body = await res.json()
+          if (body?.error) limitMsg = body.error
+        } catch {}
+        toast.error(limitMsg)
         setMessages(prev => prev.slice(0, -1))
         setIsStreaming(false)
         handleUpgrade()

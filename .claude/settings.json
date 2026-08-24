@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm list:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run:*)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\ensan\\Dev\\Ultimate Business Clarity Coach\\docs\\superpowers"
+    ]
+  }
+}
